@@ -63,9 +63,13 @@ async def get_weather(message: types.Message):
                 f"https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={OPENWEATHERMAP_ID}").content
             )
         response_json = json.loads(response)
+        weather = response_json['weather'][0]
         await message.answer(
-            f"Current weather in {latitude}, {longitude} is\n"
-            f"{response_json['weather']}",
+            f"Current weather in {latitude}, {longitude}({response_json['name']}) is\n"
+            f"weather: {weather['main']} - {weather['description']}\n"
+            f"wind: {response_json['wind']['speed']} m/s\n"
+            f"temperature: {'{0:.2f}'.format(float(response_json['main']['temp']-273.15))} C, \n"
+            f"feels like: {'{0:.2f}'.format(float(response_json['main']['feels_like']-273.15))} C\n",
             reply_markup=keyboard
         )
     except Exception:
